@@ -35,7 +35,7 @@ def rotate_view_cube():
         # Apply the modified camera to update the viewport
         viewport.camera = camera
 
-        ui.messageBox(f'View cube rotated by {rotation_angle} degrees around the x-axis.')
+        #ui.messageBox(f'View cube rotated by {rotation_angle} degrees around the x-axis.')
 
     except Exception as e:
         if ui:
