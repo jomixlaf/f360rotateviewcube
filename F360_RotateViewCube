@@ -1,0 +1,44 @@
+#Script made with ChatGPT4 Jan 5 2025 
+#Bug fixed by BrianEkins from the Autodesk Fusion 360 forum 
+#https://forums.autodesk.com/t5/fusion-api-and-scripts/manipulate-the-view-cube-by-45-degrees/m-p/13243907#M22719
+
+import adsk.core, adsk.fusion, adsk.cam, traceback, math
+
+def rotate_view_cube():
+    try:
+        # Get the Fusion 360 application and user interface
+        app = adsk.core.Application.get()
+        ui = app.userInterface
+
+        # Get the active viewport
+        viewport = app.activeViewport
+
+        # Get the current camera
+        camera = viewport.camera
+
+        # Set the rotation angle (in degrees) for the view cube
+        rotation_angle = 45
+
+        # Calculate the camera's Z-axis direction (view direction)
+        y_axis = camera.eye.vectorTo(camera.target)
+        y_axis.normalize()  # Ensure it's a unit vector
+
+        # Create a rotation matrix for the eye position and up vector
+        rotation_matrix = adsk.core.Matrix3D.create()
+        rotation_matrix.setToRotation(math.radians(rotation_angle), y_axis, camera.target)
+
+        # Update the up vector using the same rotation matrix
+        up_vector = camera.upVector
+        up_vector.transformBy(rotation_matrix)
+        camera.upVector = up_vector
+
+        # Apply the modified camera to update the viewport
+        viewport.camera = camera
+
+        ui.messageBox(f'View cube rotated by {rotation_angle} degrees around the x-axis.')
+
+    except Exception as e:
+        if ui:
+            ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
+
+rotate_view_cube()
